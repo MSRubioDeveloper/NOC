@@ -32,10 +32,11 @@ export class CheckService implements CheckServiceUseCase {
             }
 
             //guardar log
-            const log = new LogEntity(
-                `Service ${ url } working`,
-                LogSeverityLevel.low
-             )
+            const log = new LogEntity({
+                message: `Service ${ url } working`,
+                level: LogSeverityLevel.low,
+                origin: "check-service.ts"
+            });
             this.logRepository.saveLog( log );
 
             //ejecucion del callback
@@ -45,10 +46,12 @@ export class CheckService implements CheckServiceUseCase {
 
         } catch( error ){
 
-            const log = new LogEntity(
-                `Error Message: ${ error }`,
-                LogSeverityLevel.high
-            )
+            const log = new LogEntity({
+                message: `ERROR EN LA CONEXION DELS ERVICIO`,
+                level: LogSeverityLevel.high,
+                origin: "check-service.ts"
+            });
+            
             this.logRepository.saveLog( log );
 
             this.errorCallback( `${error}` )

@@ -6,6 +6,14 @@ export enum LogSeverityLevel {
     high = "high"
 } 
 
+export interface LogEntityOptions{
+    level: LogSeverityLevel;
+    message: string;
+
+    origin: string;
+    createdAt?: Date;
+}
+
 export class LogEntity{
 
     public level: LogSeverityLevel;
@@ -13,21 +21,47 @@ export class LogEntity{
     public createdAt: Date;
     public origin: string;
 
-    constructor( message: string, level: LogSeverityLevel, origin: string ){
+    constructor( options: LogEntityOptions ){
+        const { message, level, origin, createdAt = new Date() } = options;
 
         this.message = message;
         this.level = level;
-        this.createdAt = new Date();
+        this.createdAt = createdAt;
+        this.origin = origin;
    
     }
 
     //metodo que crea instancias en base a ese JSON string
-    static fromJson = ( json: string ): LogEntity => {
-        const { message, level, createdAt } = JSON.parse( json );
+    static fromJson = ( json: string = "{}" ): LogEntity => {
 
-        const log = new LogEntity( message, level);
-        log.createdAt = new Date( createdAt );
+        json = ( json === "") ? "{}" : json;
+        if( json === "{}") [];
+        
+        const { message, level, createdAt, origin } = JSON.parse( json );
+
+        const log = new LogEntity( {
+            message: message,
+            level: level,
+            createdAt: createdAt,
+            origin: origin
+        });
 
         return log;
     }
+
+
+    // Crear un logEntoity basado en un objet
+    //estas adaptando un objeto que luce como el modelod e mongo a un objeto que lusca como
+    //logentity
+    static fromObject = ( object: { [key: string]: any } ): LogEntity => {
+        const { message, level, createdAt, origin  } = object;    
+        // validaciones
+
+        const log = new LogEntity({
+            message, level, createdAt, origin
+        })
+
+        return log;
+ 
+    }   
 }
