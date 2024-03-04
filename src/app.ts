@@ -42,7 +42,7 @@ async function main() {
 
     // console.log( logs )
 
-    // Server.start();
+     Server.start();
 
 
 }
